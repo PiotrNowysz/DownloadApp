@@ -11,11 +11,16 @@ namespace DownloadApp
     public partial class MainWindow : Window
     {
         public event Action<string> StringDownloaded = (x) => { };
+        public event Action<string> FileNameProvided = (x) => { };
         public MainWindow()
         {
             InitializeComponent();
 
+             StringDownloaded += (x) => SetVisibilityAfterDownload();
             StringDownloaded += SaveToFile;
+           
+
+            FileName.Visibility = Visibility.Hidden;
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -32,6 +37,11 @@ namespace DownloadApp
                 StringDownloaded.Invoke(downloadedString);
                 
             }); 
+        }
+        private void SetVisibilityAfterDownload()
+        {
+            WebsiteUrl.Visibility = Visibility.Hidden;
+            FileName.Visibility = Visibility.Visible;
         }
         private void SaveToFile(string downloadedString)
         {
