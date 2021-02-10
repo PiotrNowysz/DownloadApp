@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:DownloadApp"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+    <StackPanel>
+        <Label Content="url address of picture:"/>
+        <TextBox/>
+        <Button Content="Download"/>
+    </StackPanel>
 </Window>
