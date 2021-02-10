@@ -12,6 +12,7 @@ namespace DownloadApp
     public partial class MainWindow : Window
     {
         public string DownloadedString { get; set; }
+        public FileDownloadingData FileDownloadingData { get; set; } = new FileDownloadingData();
         public event Action<string> StringDownloaded = (x) => { };
         public event Action<string, string> FileNameProvided = (x, y) => { };
         public MainWindow()
@@ -46,15 +47,16 @@ namespace DownloadApp
 
             if (DownloadedString != null)
             {
-                FileNameProvided.Invoke(FileName.Text, DownloadedString);
+                FileDownloadingData.FileName = FileName.Text;
+                FileNameProvided.Invoke(FileDownloadingData.FileName, DownloadedString);
                 return;
             }
-            var currentUrl = WebsiteUrl.Text;
+            FileDownloadingData.Url = WebsiteUrl.Text;
 
             await Task.Run(async() =>
             {
                 var webClient = new WebClient();
-                var downloadedString = await webClient.DownloadStringTaskAsync(currentUrl);
+                var downloadedString = await webClient.DownloadStringTaskAsync(FileDownloadingData.Url);
 
 
                 StringDownloaded.Invoke(downloadedString);
