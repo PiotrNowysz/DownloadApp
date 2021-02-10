@@ -17,22 +17,23 @@ namespace DownloadApp
         {
             InitializeComponent();
 
-             StringDownloaded += (x) => SetControlStateAfterDownload();
-            StringDownloaded += SaveToFile;
-           
+            StringDownloaded += (x) => SetControlStateAfterDownload();
+            StringDownloaded += (x) => DownloadedString = x;
+            FileNameProvided += SaveToFile;
 
             FileName.Visibility = Visibility.Hidden;
+
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
 
-           if(DownloadedString != null)
+            if (DownloadedString != null)
             {
-                SaveToFile(DownloadedString);
+                FileNameProvided.Invoke(DownloadedString);
                 return;
             }
-           var currentUrl = WebsiteUrl.Text;
+            var currentUrl = WebsiteUrl.Text;
 
             await Task.Run(() =>
             {
@@ -41,8 +42,8 @@ namespace DownloadApp
 
 
                 StringDownloaded.Invoke(downloadedString);
-                
-            }); 
+
+            });
         }
         private void SetControlStateAfterDownload()
         {
