@@ -7,8 +7,10 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <StackPanel>
-        <Label Content="url address of picture:"/>
-        <TextBox/>
-        <Button Content="Download"/>
+        <Label x:Name ="Label" Content="Enter url address of website:"/>
+        <TextBox x:Name="WebsiteUrl" />
+        <TextBox x:Name="FileName" />
+        <Button x:Name="SubmitButton" Click="Button_Click" Content="Download HTML code"/>
+        <TextBlock x:Name="DisplayText" />
     </StackPanel>
 </Window>

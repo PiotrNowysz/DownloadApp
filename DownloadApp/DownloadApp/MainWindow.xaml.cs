@@ -23,7 +23,7 @@ namespace DownloadApp
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    MessageBox.Show("Enter file's name");
+                    Label.Content = "Enter file's name:";
                 });
             };
             FileNameProvided += SaveToFile;
