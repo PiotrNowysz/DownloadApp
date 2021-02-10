@@ -19,6 +19,13 @@ namespace DownloadApp
 
             StringDownloaded += (x) => SetControlStateAfterDownload();
             StringDownloaded += (x) => DownloadedString = x;
+            StringDownloaded += (x) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MessageBox.Show("Enter file's name");
+                });
+            };
             FileNameProvided += SaveToFile;
 
             FileName.Visibility = Visibility.Hidden;
@@ -47,9 +54,14 @@ namespace DownloadApp
         }
         private void SetControlStateAfterDownload()
         {
-            WebsiteUrl.Visibility = Visibility.Hidden;
-            FileName.Visibility = Visibility.Visible;
-            SubmitButton.Content = "Save";
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                WebsiteUrl.Visibility = Visibility.Hidden;
+                FileName.Visibility = Visibility.Visible;
+                SubmitButton.Content = "Save";
+            });
+
+
         }
         private void SaveToFile(string downloadedString)
         {
