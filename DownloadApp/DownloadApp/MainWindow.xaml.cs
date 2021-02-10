@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -9,9 +10,12 @@ namespace DownloadApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        public event Action<string> StringDownloaded = (x) => { };
         public MainWindow()
         {
             InitializeComponent();
+
+            StringDownloaded += SaveToFile;
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -23,14 +27,15 @@ namespace DownloadApp
             {
                 var webClient = new WebClient();
                 var downloadedString = webClient.DownloadString(currentUrl);
-                
 
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    DisplayText.Text = "Done";
-                });
+
+                StringDownloaded.Invoke(downloadedString);
                 
             }); 
+        }
+        private void SaveToFile(string downloadedString)
+        {
+
         }
     }
 }
