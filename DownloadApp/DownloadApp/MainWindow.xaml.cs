@@ -10,13 +10,14 @@ namespace DownloadApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        public string DownloadedString { get; set; }
         public event Action<string> StringDownloaded = (x) => { };
         public event Action<string> FileNameProvided = (x) => { };
         public MainWindow()
         {
             InitializeComponent();
 
-             StringDownloaded += (x) => SetVisibilityAfterDownload();
+             StringDownloaded += (x) => SetControlStateAfterDownload();
             StringDownloaded += SaveToFile;
            
 
@@ -25,7 +26,12 @@ namespace DownloadApp
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            
+
+           if(DownloadedString != null)
+            {
+                SaveToFile(DownloadedString);
+                return;
+            }
            var currentUrl = WebsiteUrl.Text;
 
             await Task.Run(() =>
@@ -38,10 +44,11 @@ namespace DownloadApp
                 
             }); 
         }
-        private void SetVisibilityAfterDownload()
+        private void SetControlStateAfterDownload()
         {
             WebsiteUrl.Visibility = Visibility.Hidden;
             FileName.Visibility = Visibility.Visible;
+            SubmitButton.Content = "Save";
         }
         private void SaveToFile(string downloadedString)
         {
