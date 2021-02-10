@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Linq;
 
 namespace DownloadApp
 {
@@ -26,7 +29,7 @@ namespace DownloadApp
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     Label.Content = "Enter file's name:";
-                    
+
                 });
             };
             FileNameProvided += SaveToFile;
@@ -48,20 +51,23 @@ namespace DownloadApp
             if (DownloadedString != null)
             {
                 FileDownloadingData.FileName = FileName.Text;
-                FileNameProvided.Invoke(FileDownloadingData.FileName, DownloadedString);
+                if (Validate()) FileNameProvided.Invoke(FileDownloadingData.FileName, DownloadedString);
+
                 return;
             }
             FileDownloadingData.Url = WebsiteUrl.Text;
-
-            await Task.Run(async() =>
+            if (Validate())
             {
-                var webClient = new WebClient();
-                var downloadedString = await webClient.DownloadStringTaskAsync(FileDownloadingData.Url);
+                await Task.Run(async () =>
+                {
+                    var webClient = new WebClient();
+                    var downloadedString = await webClient.DownloadStringTaskAsync(FileDownloadingData.Url);
 
 
-                StringDownloaded.Invoke(downloadedString);
+                    StringDownloaded.Invoke(downloadedString);
 
-            });
+                });
+            }
         }
         private void SetControlStateAfterDownload()
         {
@@ -77,6 +83,16 @@ namespace DownloadApp
         private void SaveToFile(string fileName, string downloadedString)
         {
             File.WriteAllText(fileName, downloadedString);
+        }
+        private bool Validate()
+        {
+            var validationContext = new ValidationContext(FileDownloadingData);
+            var results = new List<ValidationResult>();
+
+            if (Validator.TryValidateObject(FileDownloadingData, validationContext, results, true)) return true;
+
+            results.ForEach(x => MessageBox.Show(x.ErrorMessage));
+            return false;
         }
     }
 }
